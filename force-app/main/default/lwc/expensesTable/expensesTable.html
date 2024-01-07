@@ -1,0 +1,19 @@
+<template>  
+    <div class="slds-card">
+        <div class="slds-grid slds-wrap">
+            <div class="slds-size_12-of-12">
+                <template lwc:if={isPaymentDataLoaded}>
+                    <lightning-datatable
+                        key-field="id"
+                        data={paymentRecords}
+                        columns={paymentColumns}
+                        hide-checkbox-column="true"
+                        column-widths-mode="auto"
+                        min-column-width="120"
+                        resize-column-disabled="true">
+                    </lightning-datatable>
+                </template>
+            </div>
+        </div>
+    </div>
+</template>
