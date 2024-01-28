@@ -3,6 +3,7 @@ import { LightningElement, wire } from 'lwc';
 import getPaymentRecords from '@salesforce/apex/ExpensesController.getPaymentRecords';
 
 const paymentCols = [
+    {label: 'Pay', fieldName: 'Pay', type:'Button', hideDefaultActions: true},
     {label: 'Name', fieldName: 'Name', hideDefaultActions: true},
     {label: 'Due Date', fieldName: 'Due_Date__c', type: 'date', typeAttributes: { month: 'short', day: '2-digit' }, hideDefaultActions: true},
     {label: 'Amount', fieldName: 'Amount_Due__c', type: 'currency', typeAttributes: { currencyCode: 'INR' }, cellAttributes: {alignment: 'left'} ,hideDefaultActions: true},
@@ -39,7 +40,9 @@ export default class ExpensesStatus extends LightningElement {
         if (payments) {
             payments.forEach(eachPayment =>{
                 let eachPay = {... eachPayment};
-                if (eachPay.Status__c == 'Pending') {
+                eachPay.paymentLink = '/' + eachPay.Id;
+                eachPay.buttonName  = 'Pay';
+                if (eachPay.Status__c == 'Pending Soon') {
                     eachPay.Class = 'slds-theme_warning';
                 }
                 if (eachPay.Status__c == 'Due Today') {
@@ -65,21 +68,27 @@ export default class ExpensesStatus extends LightningElement {
                 }
                 this.paymentRecords.push(eachPay);
             });
-            console.log('!@--- AFTER Preparation: ', JSON.stringify(this.paymentRecords));
         }
     }
 
     preparePaymentColumns(records, cols) {
-        console.log('!@--- just Here');
         if (records && records.length != 0 && cols && cols.length != 0) {
             let newAtts = {class: {fieldName: 'Class'}};
             cols.forEach(eachCol => {
                 if (eachCol.fieldName == 'Status__c') {
-                    console.log('!@--- Cell Attributes: ', JSON.stringify(eachCol.cellAttributes));
                     eachCol.cellAttributes = newAtts;
-                    console.log('!@--- Cell Attributes: ', JSON.stringify(eachCol.cellAttributes));
+                }
+                if (eachCol.fieldName == 'Pay') {
+                    eachCol.fieldName = 'buttonName'
+                    eachCol.type = 'button';
+                    eachCol.fixedWidth = 75;
+                    eachCol.typeAttributes = { label : { fieldName : 'buttonName' }, variant : 'brand' };
                 }
             });
         }
+    }
+
+    handleRowAction(event) {
+        console.log('!@--- It is working ' + JSON.stringify(event.detail.row));
     }
 }
