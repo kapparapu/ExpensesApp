@@ -1,4 +1,3 @@
-.status-colour {
-    background-color: red;
-    color: yellow;
+.supress-underline {
+    text-decoration: none;
 }
